@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo =========================
+echo sourcebackup by TheHacker
+echo "Run sourcebackup in the Terminal to backup your sources"
+echo =========================

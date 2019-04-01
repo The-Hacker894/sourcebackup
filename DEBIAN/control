@@ -1,0 +1,11 @@
+Package: xyz.skylarmccauley.sourcebackup
+Name: sourcebackup
+Version: 0.1
+Depends: firmware (>= 9.0)
+Architecture: iphoneos-arm
+Description: Backup your Cydia and Sileo resources to a zip file. Requires root permissions.
+Maintainer: TheHacker
+Homepage: https://skylarmccauley.xyz/
+Depiction: http://skylarmccauley.xyz/hacked-repo/depictions/?p=xyz.skylarmccauley.sourcebackup
+Author: TheHacker
+Section: Utilities

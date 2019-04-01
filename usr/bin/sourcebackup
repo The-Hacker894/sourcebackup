@@ -1,0 +1,114 @@
+#!/bin/sh 
+clear
+VER="0.1"
+echo "sourcebackup v" $VER
+
+CYDIADIR="/private/var/mobile/Library/Caches/com.saurik.Cydia"
+CYDIASOURCES="/private/var/mobile/Library/Caches/com.saurik.Cydia/sources.list"
+SILEODIR="/etc/apt/sources.list.d"
+SILEOSOURCES="/etc/apt/sources.list.d/sileo.sources"
+ROOT="/"
+DATE=$(date +%m-%d-%Y)
+SOURCEBACKUPDIR="/backupsources"
+SOURCEBACKUPZIP="/backupsources-$DATE.zip"
+CYDIASOURCEBACKUPDIR="/backupsources/cydia"
+SILEOSOURCEBACKUPDIR="/backupsources/sileo"
+CYDIASOURCEBACKUP="/backupsources/cydia/sources.list"
+SILEOSOURCEBACKUP="/backupsources/sileo/sileo.sources"
+SILEOBACKEDUP=false
+CYDIABACKEDUP=false
+BACKUPCYDIA=true
+BACKUPSILEO=true
+if [ ! -w $ROOT ]
+then
+	# Root directory is not writeable
+	echo "Cannot write to root directory. Try running as root?"
+	exit 1;
+fi
+
+
+if [ ! -d  $SOURCEBACKUPDIR ]
+then
+
+mkdir $SOURCEBACKUPDIR
+
+# If the Source Backup Directory doesn't already exist, create one
+echo "Created backup directory!"		
+fi
+
+echo "Checking for Cydia Sources..."
+if [ $BACKUPCYDIA ]
+then
+	if [ -d $CYDIADIR ]
+	then
+		# Cydia directory exists
+		if [ -r $CYDIASOURCES ]
+		then
+			# Cydia sources are readable
+			if [ ! -d $CYDIASOURCEBACKUPDIR ]
+			then
+			
+			mkdir $CYDIASOURCEBACKUPDIR
+			
+			# If the Cydia Source Backup Directory doesn't already exist, create one
+			echo "Found Cydia Sources and created backup directory!"
+			fi
+			
+			echo "Attempting to backup Cydia Sources..."
+			cp -r $CYDIASOURCES $CYDIASOURCEBACKUPDIR
+			echo "Backed up Cydia Sources to " $CYDIASOURCEBACKUPDIR
+			CYDIABACKEDUP=true
+		else
+			echo "Cannot read Cydia Sources!"
+			
+		fi	
+		
+	else
+		echo $CYDIADIR " not found!"
+		
+	fi
+else 
+	CYDIABACKEDUP=false
+fi
+
+echo "Checking for Sileo Source Directory..."
+if [ $BACKUPSILEO ]
+then
+	if [ -d $SILEODIR ]
+	then
+		# Sileo source directory exists
+		if [ -r $SILEOSOURCES ]
+		then
+			if [ ! -d $SILEOSOURCEBACKUPDIR ]
+			then
+			
+			mkdir $SILEOSOURCEBACKUPDIR
+			
+			# If Sileo Source Backup Directory doesn't already exist, create one
+			echo "Found Sileo Sources and created backup directory!"
+			fi
+			
+			echo "Attempting to backup Sileo Sources"
+			cp -r $SILEOSOURCES $SILEOSOURCEBACKUPDIR
+			echo "Backed up Sileo Sources to " $SILEOSOURCEBACKUPDIR
+			SILEOBACKEDUP=true
+		else
+			echo "Cannot read Sileo Sources!"
+			
+		fi
+	else 
+		echo $SILEODIR " not found!"
+		
+	fi
+else 
+	SILEOBACKEDUP=false
+fi
+
+
+
+zip -r $SOURCEBACKUPZIP $SOURCEBACKUPDIR 
+
+rm -r $SOURCEBACKUPDIR
+
+echo "Finished backing up sources! You can find the archive at " $SOURCEBACKUPZIP
+exit 0;
